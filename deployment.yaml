@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rundeck
+  namespace: rundeck
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rundeck
+  template:
+    metadata:
+      labels:
+        app: rundeck
+    spec:
+      containers:
+      - name: rundeck
+        image: rundeck/rundeck:3.4.9
+        ports:
+        - containerPort: 4440
+        env:
+        - name: RUNDECK_GRAILS_URL
+          value: "http://localhost:4440"
+        - name: RUNDECK_DATABASE_DRIVER
+          value: org.h2.Driver
+        - name: RUNDECK_DATABASE_URL
+          value: jdbc:h2:file:/home/rundeck/server/data/grailsdb
+        - name: RUNDECK_DATABASE_USERNAME
+          value: rundeck
+        - name: RUNDECK_DATABASE_PASSWORD
+          value: rundeck
+        volumeMounts:
+        - name: rundeck-data
+          mountPath: /home/rundeck/server/data
+      volumes:
+      - name: rundeck-data
+        persistentVolumeClaim:
+          claimName: rundeck-pvc
