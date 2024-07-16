@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rundeck
+  namespace: rundeck
+spec:
+  selector:
+    app: rundeck
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4440
+      nodePort: 30088  # You can specify a nodePort or let Kubernetes allocate one
+  type: NodePort
